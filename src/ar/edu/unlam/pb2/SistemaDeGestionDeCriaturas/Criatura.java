@@ -62,7 +62,10 @@ public abstract class Criatura {
 	    return false;
 	}
 
-	
+	@Override
+    public boolean esTransformacion() {
+        return true;
+    }
 	
 	
 }
