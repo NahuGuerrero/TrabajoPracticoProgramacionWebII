@@ -276,5 +276,267 @@ public class TestSistemaDeGestionDeCriaturas {
 
         assertEquals(110, base.getEnergia());
     }
+	    
+    
+
+	
+    
+    //LLAMA INTERNA
+    @Test
+    public void energiaAumenta30SiLaAfinidadEsFuego() {
+        Criatura base = new CriaturaDomesticada("Scooby", 100, AfinidadElemental.FUEGO);
+        Transformacion llama = new LlamaInterna(base);
+
+        assertEquals(130, llama.getEnergia());
+    }
+
+    @Test
+    public void energiaNoDebeSuperar200() {
+        Criatura base = new CriaturaDomesticada("Pluto", 190, AfinidadElemental.FUEGO);
+        Transformacion llama = new LlamaInterna(base);
+
+        assertEquals(200, llama.getEnergia());
+    }
+
+    @Test
+    public void siNoEsDeFuegoDebeMantenerEnergiaBase() {
+        Criatura base = new CriaturaDomesticada("Tequila", 100, AfinidadElemental.AGUA);
+        Transformacion llama = new LlamaInterna(base);
+
+        assertEquals(100, llama.getEnergia());
+    }
+
+     @Test
+    public void siNoEsDeFuegoDebeVolverseInestable() {
+        Criatura base = new CriaturaDomesticada("Frutilla", 100, AfinidadElemental.AIRE);
+        Transformacion llama = new LlamaInterna(base);
+
+        assertEquals(EstadoEmocional.INESTABLE, llama.getEstado());
+    }
+
+    @Test
+    public void siEsDeFuegoMantieneSuEstadoOriginal() {
+        Criatura base = new CriaturaDomesticada("Pera", 100, AfinidadElemental.FUEGO);
+        Transformacion llama = new LlamaInterna(base);
+
+        assertEquals(base.getEstado(), llama.getEstado());
+    }
+
+    @Test
+    public void entrenarDebeDelegarAlaCriaturaBaseLlamaInterna() {
+        Criatura base = new CriaturaDomesticada("Uva", 100, AfinidadElemental.FUEGO);
+        Transformacion llama = new LlamaInterna(base);
+
+        llama.entrenar(); 
+
+        assertEquals(110, base.getEnergia());
+    }        
+    
+    
+    
+    
+    
+    //VINCULO TERRESTRE
+    @Test
+    public void energiaDebeElevarseA50SiEsMenor() {
+        Criatura base = new CriaturaDomesticada("Bruno", 30, AfinidadElemental.TIERRA);
+        Transformacion vinculo = new VinculoTerrestre(base);
+
+        assertEquals(50, vinculo.getEnergia());
+    }
+
+    @Test
+    public void energiaSeMantieneSiEsMayorA50() {
+        Criatura base = new CriaturaDomesticada("Lucas", 80, AfinidadElemental.TIERRA);
+        Transformacion vinculo = new VinculoTerrestre(base);
+
+        assertEquals(80, vinculo.getEnergia());
+    }
+
+    @Test
+    public void entrenarDebeDelegarAlaCriaturaBaseVinculoTerrestre() {
+        Criatura base = new CriaturaDomesticada("Benito", 100, AfinidadElemental.TIERRA);
+        Transformacion vinculo = new VinculoTerrestre(base);
+
+        vinculo.entrenar(); 
+
+        assertEquals(110, base.getEnergia());
+    }
+    
+    
+    
+    
+    
+    //ASCENSO DEL VIENTO
+    @Test
+    public void afinidadSiempreDebeSerAireSiElObjetivoNoEsAire() {
+        Criatura base = new CriaturaDomesticada("Fido,", 100, AfinidadElemental.TIERRA);
+        Transformacion viento = new AscensoDelViento(base);
+
+        assertEquals(AfinidadElemental.AIRE, viento.getAfinidad());
+    }
+
+    @Test
+    public void siLaCriaturaEsDeAireSeMantieneSuAfinidad() {
+        Criatura base = new CriaturaDomesticada("Lolo", 100, AfinidadElemental.AIRE);
+        Transformacion viento = new AscensoDelViento(base);
+
+        assertEquals(AfinidadElemental.AIRE, viento.getAfinidad());
+    }
+
+    @Test
+    public void entrenarDebeDelegarAlaCriaturaBaseAscensoDelViento() {
+        Criatura base = new CriaturaDomesticada("Bella", 100, AfinidadElemental.AIRE);
+        Transformacion viento = new AscensoDelViento(base);
+
+        viento.entrenar(); 
+
+        assertEquals(110, base.getEnergia());
+    }    
+    
+    
+    
+    
+    
+    //INTERACCION ENTRE CRIATURAS
+    @Test
+    public void mismasAfinidadesAmbasGananDiezDeEnergia() {
+        Criatura uno = new CriaturaDomesticada("Uno", 100, AfinidadElemental.AGUA);
+        Criatura dos = new CriaturaSalvaje("Dos", 120, AfinidadElemental.AGUA);
+
+        InteraccionEntreCriaturas.interactuar(uno, dos);
+
+        assertEquals(110, uno.getEnergia());
+        assertEquals(130, dos.getEnergia());
+    }
+
+
+    @Test
+    public void afinidadesOpuestasVuelvenInestablesALasCriaturas() {
+        Criatura uno = new CriaturaDomesticada("Uno", 100, AfinidadElemental.AGUA);
+        Criatura dos = new CriaturaDomesticada("Dos", 120, AfinidadElemental.FUEGO);
+
+        InteraccionEntreCriaturas.interactuar(uno, dos);
+
+        assertEquals(EstadoEmocional.INESTABLE, uno.getEstado());
+        assertEquals(EstadoEmocional.INESTABLE, dos.getEstado());
+    }
+
+	
+    @Test
+    public void ancestralDominaLaInteraccion() {
+        Criatura ancestral = new CriaturaAncestral("Anci", 150, AfinidadElemental.TIERRA);
+        Criatura otra = new CriaturaDomesticada("Peque", 100, AfinidadElemental.AGUA);
+
+        InteraccionEntreCriaturas.interactuar(ancestral, otra);
+
+        assertEquals(170, ancestral.getEnergia());
+        assertEquals(85, otra.getEnergia());
+    }
+
+ 
+    @Test
+    public void energiaNoDebeCaerDebajoDeCero() {
+        Criatura ancestral = new CriaturaAncestral("Anci", 150, AfinidadElemental.AIRE);
+        Criatura otra = new CriaturaDomesticada("Mini", 10, AfinidadElemental.AGUA);
+
+        InteraccionEntreCriaturas.interactuar(ancestral, otra);
+
+        assertEquals(170, ancestral.getEnergia());
+        assertEquals(0, otra.getEnergia());
+    }
+    
+    
+    
+    
+    
+    //REPORTES DEL CONSEJO 
+    @Test
+    public void listarTodasLasCriaturasDevuelveTodasLasCriaturas() {
+
+        MaestroElemental maestro1 = new MaestroElemental("Diego", 30, AfinidadElemental.FUEGO);
+        MaestroElemental maestro2 = new MaestroElemental("Zinedine", 30, AfinidadElemental.AGUA);
+
+        maestro1.agregarCriatura(new CriaturaDomesticada("Lionel", 100, AfinidadElemental.AGUA));
+        maestro2.agregarCriatura(new CriaturaSalvaje("Pele", 150, AfinidadElemental.FUEGO));
+        maestro2.agregarCriatura(new CriaturaAncestral("Cristiano", 120, AfinidadElemental.TIERRA));
+
+        List<MaestroElemental> maestros = Arrays.asList(maestro1, maestro2);
+        ConsejoDeElandria consejo = new ConsejoDeElandria(maestros);
+
+        List<Criatura> todas = consejo.listarTodasLasCriaturas();
+
+        assertEquals(3, todas.size());
+    }
+
+	
+    @Test
+    public void obtenerCriaturaConMasEnergiaSeleccionaLaCorrecta() {
+
+        MaestroElemental maestro = new MaestroElemental("Diego", 30, AfinidadElemental.AGUA);
+
+        Criatura criatura1 = new CriaturaDomesticada("Zinedine", 100, AfinidadElemental.AGUA);
+        Criatura criatura2 = new CriaturaSalvaje("Lionel", 150, AfinidadElemental.FUEGO);
+        Criatura criatura3 = new CriaturaAncestral("Pele", 180, AfinidadElemental.TIERRA);
+
+        maestro.agregarCriatura(criatura1);
+        maestro.agregarCriatura(criatura2);
+        maestro.agregarCriatura(criatura3);
+
+        ConsejoDeElandria consejo = new ConsejoDeElandria(Arrays.asList(maestro));
+
+        assertEquals(criatura3, consejo.obtenerCriaturaConMasEnergia());
+    }
+
+	
+    @Test
+    public void maestroConMasCriaturasTransformadasDevuelveElMayor() {
+
+    	MaestroElemental maestro1 = new MaestroElemental("Pablo", 30, AfinidadElemental.FUEGO);
+    	maestro1.agregarCriatura(
+         new LlamaInterna(
+             new CriaturaDomesticada("A1", 100, AfinidadElemental.FUEGO)
+         )
+     );
+
+		
+     MaestroElemental maestro2 = new MaestroElemental("Rodrigo", 30, AfinidadElemental.AGUA);
+     maestro2.agregarCriatura(
+         new BendicionDelRio(
+             new CriaturaSalvaje("B1", 150, AfinidadElemental.FUEGO)
+         )
+     );
+     maestro2.agregarCriatura(
+         new AscensoDelViento(
+             new CriaturaDomesticada("B2", 80, AfinidadElemental.TIERRA)
+         )
+     );
+
+     ConsejoDeElandria consejo = new ConsejoDeElandria(Arrays.asList(maestro1, maestro2));
+
+     assertEquals(maestro2, consejo.maestroConMasCriaturasTransformadas());
+    }
+
+    
+
+    @Test
+    public void cantidadPorAfinidadCuentaCorrectamenteLasCriaturas() {
+
+        MaestroElemental maestro1 = new MaestroElemental("Pablo", 30, AfinidadElemental.TIERRA);
+        MaestroElemental maestro2 = new MaestroElemental("Rodrigo", 30, AfinidadElemental.AGUA);
+
+        maestro1.agregarCriatura(new CriaturaDomesticada("A1", 100, AfinidadElemental.AGUA));
+        maestro2.agregarCriatura(new CriaturaSalvaje("B1", 120, AfinidadElemental.FUEGO));
+        maestro2.agregarCriatura(new CriaturaAncestral("B2", 150, AfinidadElemental.TIERRA));
+
+        ConsejoDeElandria consejo = new ConsejoDeElandria(Arrays.asList(maestro1, maestro2));
+
+        Map<AfinidadElemental, Integer> mapa = consejo.cantidadPorAfinidad();
+
+        assertEquals(Integer.valueOf(1), mapa.get(AfinidadElemental.AGUA));
+        assertEquals(Integer.valueOf(1), mapa.get(AfinidadElemental.FUEGO));
+        assertEquals(Integer.valueOf(1), mapa.get(AfinidadElemental.TIERRA));
+    }
+}
     
     
