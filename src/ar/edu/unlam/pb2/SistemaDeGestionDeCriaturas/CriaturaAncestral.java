@@ -23,4 +23,10 @@ public class CriaturaAncestral extends Criatura{
             super.modificarEnergia(100 - getEnergia());
         }
     }
+
+	@Override
+    public boolean esAncestral() {
+        return true;
+    }
+	
 }
