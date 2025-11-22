@@ -54,7 +54,10 @@ public abstract class Criatura {
 		return afinidad;
 	}
 	
-	
+	public boolean esAncestral() {
+	    return false;
+	}
+
 	
 	
 	
