@@ -58,6 +58,10 @@ public abstract class Criatura {
 	    return false;
 	}
 
+	public boolean esTransformacion() {
+	    return false;
+	}
+
 	
 	
 	
